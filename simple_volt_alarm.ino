@@ -1,26 +1,28 @@
 
-const int ledPin = 1;
+const int ledPin = 7;
 const int sensorPin = A3;
 const float R1 = 4700.0;
 const float R2 = 2700.0;
 const float WarnVoltage = 3.15;
-const float CritVoltage = 3.0;
+const float CritVoltage = 3.05;
 const float resolution = 1023.0;
 const float cells = 2.0;
-const float v_offset = 0.3;
+const float v_offset = 0.8;
 
 
 // the setup function runs once when you press reset or power the board
 void setup() {
   // initialize digital pin 1 as an output.
-  pinMode(1, OUTPUT);
+  pinMode(ledPin, OUTPUT);
+  pinMode(sensorPin, INPUT);
+
   Serial.begin(9600);
 }
 
 // the loop function runs over and over again forever
 void loop() {
   
-  float CellsensorValue = (analogRead(sensorPin) / resolution * 5.0 * (R1+R2) / R2 - v_offset) / cells; // take read value and convert to average cell value.
+  float CellsensorValue = (analogRead(sensorPin) / resolution * 5.0 * (R1+R2) / R2 - v_offset); // / cells; // take read value and convert to average cell value.
 
    
   if (CellsensorValue > WarnVoltage){    // if cell value above warnvoltage, keep led on
