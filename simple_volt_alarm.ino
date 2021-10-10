@@ -1,5 +1,5 @@
 
-const int ledPin = 7;
+const int ledPin = 1;
 const int sensorPin = A3;
 const float R1 = 4700.0;
 const float R2 = 2700.0;
