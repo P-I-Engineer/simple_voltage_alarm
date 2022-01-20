@@ -15,10 +15,10 @@ start with v_scaler = 1, then compute the percentage your off from your input.
 #define cells 2.0         // number of cells in your pack
 #define v_scaler .96      // scale factor for fine tuning.
 #define buzpin 9          // buzzer output
-#define led_short 200     // led flash every .2 seconds
-#define led_long 1000     // led flash every second
-#define buz_short 60000   // buzzer every 1 minute
-#define buz_long 180000   // buzzer every 3 minutes
+#define led_crit 200     // led flash every .2 seconds
+#define led_warn 1000     // led flash every second
+#define buz_crit 60000   // buzzer every 1 minute
+#define buz_warn 180000   // buzzer every 3 minutes
 unsigned long led_time_now = 0;
 unsigned long buzz_time_now = 0;
 unsigned long previousMillis_led = 0;
@@ -54,7 +54,7 @@ void loop()
   else if (CellsensorValue < WarnVoltage && CellsensorValue > CritVoltage) // if cell value below warn and above critical slow flash
   {
 
-    if (currentMillis_led - previousMillis_led >= led_long)
+    if (currentMillis_led - previousMillis_led >= led_warn)
     {
 
       previousMillis_led = currentMillis_led;
@@ -71,7 +71,7 @@ void loop()
       digitalWrite(ledPin, ledState);
     }
 
-    if (currentMillis_buzz - previousMillis_buzz >= buz_long)
+    if (currentMillis_buzz - previousMillis_buzz >= buz_warn)
     {
       previousMillis_buzz = currentMillis_buzz;
       tone(9, 200, 1000);
@@ -80,7 +80,7 @@ void loop()
 
   else // if cell value below critical voltage fast flash
   {
-    if (currentMillis_led - previousMillis_led >= led_short)
+    if (currentMillis_led - previousMillis_led >= led_crit)
     {
 
       previousMillis_led = currentMillis_led;
@@ -96,7 +96,7 @@ void loop()
       digitalWrite(ledPin, ledState);
     }
 
-    if (currentMillis_buzz - previousMillis_buzz >= buz_short)
+    if (currentMillis_buzz - previousMillis_buzz >= buz_crit)
     {
       previousMillis_buzz = currentMillis_buzz;
       tone(9, 200, 1000);
