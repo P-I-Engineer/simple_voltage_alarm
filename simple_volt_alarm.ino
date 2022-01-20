@@ -15,9 +15,9 @@ start with v_scaler = 1, then compute the percentage your off from your input.
 #define cells 2.0         // number of cells in your pack
 #define v_scaler .96      // scale factor for fine tuning.
 #define buzpin 9          // buzzer output
-#define led_crit 200     // led flash every .2 seconds
+#define led_crit 200      // led flash every .2 seconds
 #define led_warn 1000     // led flash every second
-#define buz_crit 60000   // buzzer every 1 minute
+#define buz_crit 60000    // buzzer every 1 minute
 #define buz_warn 180000   // buzzer every 3 minutes
 unsigned long led_time_now = 0;
 unsigned long buzz_time_now = 0;
@@ -43,8 +43,7 @@ void loop()
   float CellsensorValue = (analogRead(sensorPin) / resolution * 5.0 * (R1 + R2) / R2 * v_scaler) / cells; // take read value and convert to average cell value.
   //float fullVolt = CellsensorValue * 2;   // for debug
   //int raw = analogRead(sensorPin);        // for debug
-  unsigned long currentMillis_led = millis();
-  unsigned long currentMillis_buzz = millis();
+  unsigned long currentMillis = millis();
 
   if (CellsensorValue > WarnVoltage) // if cell value above WarnVoltage, keep led on
   {
@@ -54,10 +53,10 @@ void loop()
   else if (CellsensorValue < WarnVoltage && CellsensorValue > CritVoltage) // if cell value below warn and above critical slow flash
   {
 
-    if (currentMillis_led - previousMillis_led >= led_warn)
+    if (currentMillis - previousMillis_led >= led_warn)
     {
 
-      previousMillis_led = currentMillis_led;
+      previousMillis_led = currentMillis;
 
       if (ledState == LOW)
       {
@@ -71,19 +70,20 @@ void loop()
       digitalWrite(ledPin, ledState);
     }
 
-    if (currentMillis_buzz - previousMillis_buzz >= buz_warn)
+    if (previousMillis_buzz >= buz_warn)
     {
-      previousMillis_buzz = currentMillis_buzz;
+      previousMillis_buzz = currentMillis;
+
       tone(9, 200, 1000);
     }
   }
 
   else // if cell value below critical voltage fast flash
   {
-    if (currentMillis_led - previousMillis_led >= led_crit)
+    if (currentMillis - previousMillis_led >= led_crit)
     {
 
-      previousMillis_led = currentMillis_led;
+      previousMillis_led = currentMillis;
 
       if (ledState == LOW)
       {
@@ -96,9 +96,10 @@ void loop()
       digitalWrite(ledPin, ledState);
     }
 
-    if (currentMillis_buzz - previousMillis_buzz >= buz_crit)
+    if (previousMillis_buzz >= buz_crit)
     {
-      previousMillis_buzz = currentMillis_buzz;
+      previousMillis_buzz = currentMillis;
+
       tone(9, 200, 1000);
     }
   }
