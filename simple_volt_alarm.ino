@@ -14,12 +14,12 @@ start with v_scaler = 1, then compute the percentage your off from your input.
 #define CritVoltage 3.02  // average cell voltage when you want led to fast flash
 #define resolution 1023.0 // 10 bit resolution of 5v arduino
 #define cells 2.0         // number of cells in your pack
-#define v_scaler 1      // scale factor for fine tuning.
+#define v_scaler .999      // scale factor for fine tuning.
 #define buzpin 9          // buzzer output
 #define led_crit 200      // led flash every .2 seconds
 #define led_warn 1000     // led flash every second
-#define buz_crit 3000    // buzzer every 1 minute
-#define buz_warn 3000   // buzzer every 3 minutes
+#define buz_crit 120000    // buzzer every 1 minute
+#define buz_warn 300000   // buzzer every 3 minutes
 #define serial_step 200
 
 unsigned long previousMillis_led = 0;
@@ -85,7 +85,7 @@ void loop()
     {
       previousMillis_buzz = currentMillis;
 
-      tone(9, 200, 1000);
+      tone(9, 200, 500);
     }
   }
 
