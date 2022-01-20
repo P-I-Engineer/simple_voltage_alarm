@@ -5,7 +5,7 @@ uncomment debug stuff to use serial monitor to fine tune using scaling factor.
 start with v_scaler = 1, then compute the percentage your off from your input.
 */
 
-#define ledPin 7          // led pin output
+#define ledPin LED_BUILTIN   //7          // led pin output
 #define sensorPin A3      // output from voltage divider
 #define R1 4700.0         // R1 value from voltage divider
 #define R2 2700.0         // R2 value from voltage divider
@@ -17,8 +17,10 @@ start with v_scaler = 1, then compute the percentage your off from your input.
 #define buzpin 9          // buzzer output
 #define led_crit 200     // led flash every .2 seconds
 #define led_warn 1000     // led flash every second
-#define buz_crit 60000   // buzzer every 1 minute
-#define buz_warn 180000   // buzzer every 3 minutes
+#define buz_crit 2000   // buzzer every 1 minute
+#define buz_warn 5000   // buzzer every 3 minutes
+#define debug_volt 3
+
 unsigned long led_time_now = 0;
 unsigned long buzz_time_now = 0;
 unsigned long previousMillis_led = 0;
@@ -43,21 +45,20 @@ void loop()
   float CellsensorValue = (analogRead(sensorPin) / resolution * 5.0 * (R1 + R2) / R2 * v_scaler) / cells; // take read value and convert to average cell value.
   //float fullVolt = CellsensorValue * 2;   // for debug
   //int raw = analogRead(sensorPin);        // for debug
-  unsigned long currentMillis_led = millis();
-  unsigned long currentMillis_buzz = millis();
+  unsigned long currentMillis = millis();
 
-  if (CellsensorValue > WarnVoltage) // if cell value above WarnVoltage, keep led on
+  if (debug_volt > WarnVoltage) // if cell value above WarnVoltage, keep led on
   {
     digitalWrite(ledPin, HIGH);
   }
 
-  else if (CellsensorValue < WarnVoltage && CellsensorValue > CritVoltage) // if cell value below warn and above critical slow flash
+  else if (debug_volt < WarnVoltage && debug_volt > CritVoltage) // if cell value below warn and above critical slow flash
   {
 
-    if (currentMillis_led - previousMillis_led >= led_warn)
+    if (currentMillis - previousMillis_led >= led_warn)
     {
 
-      previousMillis_led = currentMillis_led;
+      previousMillis_led = currentMillis;
 
       if (ledState == LOW)
       {
@@ -71,19 +72,19 @@ void loop()
       digitalWrite(ledPin, ledState);
     }
 
-    if (currentMillis_buzz - previousMillis_buzz >= buz_warn)
+    if (currentMillis - previousMillis_buzz >= buz_warn)
     {
-      previousMillis_buzz = currentMillis_buzz;
+      previousMillis_buzz = currentMillis;
       tone(9, 200, 1000);
     }
   }
 
   else // if cell value below critical voltage fast flash
   {
-    if (currentMillis_led - previousMillis_led >= led_crit)
+    if (currentMillis - previousMillis_led >= led_crit)
     {
 
-      previousMillis_led = currentMillis_led;
+      previousMillis_led = currentMillis;
 
       if (ledState == LOW)
       {
@@ -96,9 +97,9 @@ void loop()
       digitalWrite(ledPin, ledState);
     }
 
-    if (currentMillis_buzz - previousMillis_buzz >= buz_crit)
+    if (currentMillis - previousMillis_buzz >= buz_crit)
     {
-      previousMillis_buzz = currentMillis_buzz;
+      previousMillis_buzz = currentMillis;
       tone(9, 200, 1000);
     }
   }
